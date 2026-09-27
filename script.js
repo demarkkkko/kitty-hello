@@ -187,18 +187,50 @@ function criarCartas(naipe) {
 
         carta.innerHTML = `
 
-            <div class="card-number">
-                ${index + 1}/14
-            </div>
+            carta.innerHTML = `
 
-            <div class="card-symbol">
-                ${naipes[naipe].simbolo}
-            </div>
+    <div class="card-number">
+        ${index + 1}/14
+    </div>
 
-            <h3>
-                ${numero} de ${naipes[naipe].nome}
-            </h3>
+    <div class="card-symbol">
+        ${naipes[naipe].simbolo}
+    </div>
 
-            <div class="card-resumo">
-                ✎ Clique em EDITAR para
+    <h3>
+        ${numero} de ${naipes[naipe].nome}
+    </h3>
 
+    <div
+        class="card-resumo"
+        onclick="abrirEditor(
+            '${id}',
+            '${naipe}',
+            '${numero}'
+        )"
+    >
+        ✎ Clique aqui para escrever seu estudo...
+    </div>
+
+`;
+.card-resumo {
+    min-height: 80px;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+    border: 1px dashed #68314f;
+
+    background: #0d070f;
+
+    color: #ead7e3;
+
+    cursor: text;
+
+    white-space: normal;
+}
+
+.card-resumo:hover {
+    border-color: #d85a91;
+}

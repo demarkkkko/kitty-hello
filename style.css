@@ -722,7 +722,15 @@ footer p {
 /* ==============================
    EDITOR
 ============================== */
-
+.card-resumo {
+    min-height: 80px;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px dashed #68314f;
+    background: #0d070f;
+    color: #ead7e3;
+    cursor: text;
+}
 .editor {
     display: none;
 
