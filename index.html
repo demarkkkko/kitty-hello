@@ -491,7 +491,69 @@
         </p>
 
     </footer>
+    
 
+
+</div>
+    <div id="editor" class="editor">
+
+    <div class="editor-caixa">
+
+        <button
+            class="fechar-editor"
+            onclick="fecharEditor()"
+        >
+            ×
+        </button>
+
+        <h2 id="editor-titulo">
+            Editando carta
+        </h2>
+
+        <input
+            type="hidden"
+            id="editor-id"
+        >
+
+        <input
+            type="hidden"
+            id="editor-naipe"
+        >
+
+        <input
+            type="hidden"
+            id="editor-numero"
+        >
+
+        <label>
+            Palavras-chave
+        </label>
+
+        <input
+            type="text"
+            id="editor-palavras"
+            placeholder="ex: energia, começo..."
+        >
+
+        <label>
+            Meu significado
+        </label>
+
+        <textarea
+            id="editor-significado"
+            placeholder="Escreva seus estudos aqui..."
+        ></textarea>
+
+        <button
+            class="salvar-editor"
+            onclick="salvarEditor()"
+        >
+            💾 SALVAR
+        </button>
+
+        <span id="editor-status"></span>
+
+    </div>
 
 </div>
 

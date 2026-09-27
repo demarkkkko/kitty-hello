@@ -719,3 +719,173 @@ footer p {
     }
 
 }
+/* ==============================
+   EDITOR
+============================== */
+
+.editor {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    z-index: 9999;
+
+    padding: 20px;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.editor.aberto {
+    display: flex;
+}
+
+.editor-caixa {
+    position: relative;
+
+    width: 100%;
+
+    max-width: 600px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: #120b14;
+
+    border: 2px solid #d85a91;
+
+    padding: 20px;
+
+    box-shadow: 5px 5px 0 #000;
+}
+
+.editor-caixa h2 {
+    color: #ef82b4;
+
+    margin-top: 0;
+
+    font-family: "Press Start 2P", cursive;
+
+    font-size: 15px;
+
+    line-height: 1.7;
+}
+
+.editor-caixa label {
+    display: block;
+
+    margin-top: 15px;
+
+    margin-bottom: 5px;
+
+    color: #df75ac;
+}
+
+.editor-caixa input,
+.editor-caixa textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    background: #09060b;
+
+    color: #ead7e3;
+
+    border: 1px solid #68314f;
+
+    padding: 10px;
+
+    font-family: "Patrick Hand", cursive;
+
+    font-size: 17px;
+
+    outline: none;
+}
+
+.editor-caixa textarea {
+    min-height: 180px;
+
+    resize: vertical;
+}
+
+.editor-caixa input:focus,
+.editor-caixa textarea:focus {
+    border-color: #e34b94;
+}
+
+.fechar-editor {
+    position: absolute;
+
+    right: 10px;
+
+    top: 10px;
+
+    background: none;
+
+    border: none;
+
+    color: #ef82b4;
+
+    font-size: 28px;
+
+    cursor: pointer;
+}
+
+.salvar-editor {
+    margin-top: 15px;
+
+    padding: 10px 15px;
+
+    background: #281021;
+
+    color: #f08abc;
+
+    border: 1px solid #8b3b64;
+
+    font-family: "Patrick Hand", cursive;
+
+    font-size: 18px;
+
+    cursor: pointer;
+}
+
+.salvar-editor:hover {
+    background: #461633;
+}
+
+#editor-status {
+    margin-left: 10px;
+
+    color: #f38abb;
+}
+
+
+/* BOTÃO DAS CARTAS */
+
+.editar-btn {
+    margin-top: 12px;
+
+    padding: 7px 12px;
+
+    background: #281021;
+
+    color: #f08abc;
+
+    border: 1px solid #8b3b64;
+
+    font-family: "Patrick Hand", cursive;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+.editar-btn:hover {
+    background: #461633;
+}
