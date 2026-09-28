@@ -1,658 +1,260 @@
-/* =========================================
-   CONFIGURAÇÃO DO SUPABASE
-========================================= */
+// ======================================================
+// CONFIGURAÇÃO
+// ======================================================
 
-const SUPABASE_URL = "https://zkvqnvhagkwgheeprrvg.supabase.co/rest/v1/";
-
+const SUPABASE_URL = "https://zkvqnvhagkwgheeprrvg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_aqZ68nmgiQ1ncyljak-fGg_YgTfHfqj";
 
-
+// Cria conexão com o Supabase
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
 
 
+// ======================================================
+// CONFIGURAÇÃO DO GITHUB
+// ======================================================
 
-/* =========================================
-   CARTAS
-========================================= */
+// Seu GitHub Pages
+const GITHUB_USER = "demarkkkko";
 
-const cartas = [
-    "Ás",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "Valete",
-    "Cavaleiro",
-    "Rainha",
-    "Rei"
-];
+// Se o site estiver no repositório demarkkkko.github.io
+const GITHUB_REPO = "demarkkkko.github.io";
+
+// Arquivo que contém os dados das cartas.
+// TROQUE caso o seu arquivo tenha outro nome.
+const GITHUB_ARQUIVO = "cartas.json";
+
+// Branch principal
+const GITHUB_BRANCH = "main";
 
 
-const naipes = {
+// ======================================================
+// LER CARTAS DO GITHUB
+// ======================================================
 
-    paus: {
-        nome: "Paus",
-        simbolo: "♣"
-    },
+async function carregarDoGitHub() {
 
-    copas: {
-        nome: "Copas",
-        simbolo: "♥"
-    },
+    const url =
+        `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_ARQUIVO}`;
 
-    espadas: {
-        nome: "Espadas",
-        simbolo: "♠"
-    },
+    try {
 
-    ouros: {
-        nome: "Ouros",
-        simbolo: "♦"
+        const resposta = await fetch(url);
+
+        if (!resposta.ok) {
+            throw new Error(
+                `GitHub respondeu com ${resposta.status}`
+            );
+        }
+
+        const dados = await resposta.json();
+
+        console.log("Cartas carregadas do GitHub:", dados);
+
+        return dados;
+
+    } catch (erro) {
+
+        console.error("Erro ao carregar cartas do GitHub:", erro);
+
+        return [];
     }
-
-};
-
-
-
-/* =========================================
-   GERAR ID NUMÉRICO
-========================================= */
-
-function gerarId(naipe, index) {
-
-    const ordem = {
-
-        paus: 1,
-
-        copas: 2,
-
-        espadas: 3,
-
-        ouros: 4
-
-    };
-
-    return (
-        (ordem[naipe] - 1) * 14
-        + index
-        + 1
-    );
-
 }
 
 
+// ======================================================
+// LER CARTAS DO SUPABASE
+// ======================================================
 
-/* =========================================
-   ABRIR EDITOR
-========================================= */
+async function carregarDoSupabase() {
 
-async function abrirEditor(
-    id,
-    naipe,
-    numero
-) {
+    try {
 
-    const editor =
-        document.getElementById("editor");
-
-
-    const titulo =
-        document.getElementById("editor-titulo");
-
-
-    const palavras =
-        document.getElementById("editor-palavras");
-
-
-    const significado =
-        document.getElementById("editor-significado");
-
-
-    const idInput =
-        document.getElementById("editor-id");
-
-
-    const naipeInput =
-        document.getElementById("editor-naipe");
-
-
-    const numeroInput =
-        document.getElementById("editor-numero");
-
-
-    const status =
-        document.getElementById("editor-status");
-
-
-    editor.classList.add("aberto");
-
-
-    titulo.textContent =
-        `${numero} de ${naipes[naipe].nome}`;
-
-
-    idInput.value = id;
-
-    naipeInput.value = naipe;
-
-    numeroInput.value = numero;
-
-
-    palavras.value = "";
-
-    significado.value = "";
-
-    status.textContent = "carregando...";
-
-
-    const resultado =
-        await supabaseClient
+        const { data, error } = await supabaseClient
             .from("cartas")
             .select("*")
-            .eq("id", id)
-            .maybeSingle();
+            .order("id", { ascending: true });
 
+        if (error) {
+            throw error;
+        }
 
-    if (resultado.error) {
+        console.log("Cartas carregadas do Supabase:", data);
+
+        return data || [];
+
+    } catch (erro) {
 
         console.error(
-            "Erro ao carregar:",
-            resultado.error
+            "Erro ao carregar cartas do Supabase:",
+            erro
         );
 
-        status.textContent =
-            "erro ao carregar";
-
-        return;
+        return [];
     }
-
-
-    if (resultado.data) {
-
-        palavras.value =
-            resultado.data.palavras || "";
-
-
-        significado.value =
-            resultado.data.significado || "";
-
-    }
-
-
-    status.textContent = "";
-
-
-
-    /* Foca no campo automaticamente */
-
-    setTimeout(() => {
-
-        palavras.focus();
-
-    }, 150);
-
 }
 
 
+// ======================================================
+// CARREGAR DADOS
+// ======================================================
 
-/* =========================================
-   FECHAR EDITOR
-========================================= */
+async function carregarCartas() {
 
-function fecharEditor() {
+    // Primeiro tenta o Supabase
+    const cartasSupabase = await carregarDoSupabase();
 
-    document
-        .getElementById("editor")
-        .classList
-        .remove("aberto");
+    if (cartasSupabase.length > 0) {
 
+        console.log("Usando dados do Supabase.");
+
+        return cartasSupabase;
+    }
+
+
+    // Se não tiver nada no Supabase,
+    // usa o GitHub como banco inicial.
+
+    console.log(
+        "Supabase vazio. Carregando cartas do GitHub..."
+    );
+
+    return await carregarDoGitHub();
 }
 
 
+// ======================================================
+// SALVAR UMA CARTA NO SUPABASE
+// ======================================================
 
-/* =========================================
-   SALVAR CARTA
-========================================= */
+async function salvarCarta(carta) {
 
-async function salvarEditor() {
+    try {
 
-    const id =
-        Number(
-            document.getElementById(
-                "editor-id"
-            ).value
-        );
-
-
-    const naipe =
-        document.getElementById(
-            "editor-naipe"
-        ).value;
-
-
-    const numero =
-        document.getElementById(
-            "editor-numero"
-        ).value;
-
-
-    const palavras =
-        document.getElementById(
-            "editor-palavras"
-        ).value;
-
-
-    const significado =
-        document.getElementById(
-            "editor-significado"
-        ).value;
-
-
-    const status =
-        document.getElementById(
-            "editor-status"
-        );
-
-
-    status.textContent =
-        "salvando...";
-
-
-    const resultado =
-        await supabaseClient
+        const { data, error } = await supabaseClient
             .from("cartas")
-            .upsert({
+            .upsert(
+                carta,
+                {
+                    onConflict: "id"
+                }
+            )
+            .select();
 
-                id: id,
+        if (error) {
+            throw error;
+        }
 
-                naipe: naipe,
+        console.log("Carta salva:", data);
 
-                numero: numero,
+        return true;
 
-                palavras: palavras,
-
-                significado: significado
-
-            });
-
-
-    if (resultado.error) {
+    } catch (erro) {
 
         console.error(
-            "ERRO DO SUPABASE:",
-            resultado.error
+            "Erro ao salvar carta:",
+            erro
         );
-
-
-        status.textContent =
-            "❌ erro ao salvar";
-
 
         alert(
             "Não consegui salvar.\n\n" +
-            resultado.error.message
+            erro.message
         );
 
-
-        return;
+        return false;
     }
-
-
-    status.textContent =
-        "♡ salvo online!";
-
-
-    atualizarCarta(
-        id,
-        palavras,
-        significado
-    );
-
-
-    setTimeout(() => {
-
-        fecharEditor();
-
-    }, 700);
-
 }
 
 
+// ======================================================
+// EXEMPLO DE FUNÇÃO DO BOTÃO SALVAR
+// ======================================================
 
-/* =========================================
-   ATUALIZAR CARTA NA TELA
-========================================= */
+async function salvarEditor() {
 
-function atualizarCarta(
-    id,
-    palavras,
-    significado
-) {
+    // Pega o ID da carta
+    const idElement =
+        document.getElementById("editor-id");
 
-    const card =
-        document.querySelector(
-            `[data-card-id="${id}"]`
-        );
+    // Pega os campos do editor
+    const palavrasElement =
+        document.getElementById("editor-palavras");
 
-
-    if (!card) {
-        return;
-    }
+    const significadoElement =
+        document.getElementById("editor-significado");
 
 
-    const resumo =
-        card.querySelector(
-            ".card-resumo"
-        );
-
-
-    resumo.textContent = "";
-
-
-    if (palavras) {
-
-        const palavra =
-            document.createElement("strong");
-
-
-        palavra.textContent =
-            "✧ " + palavras;
-
-
-        resumo.appendChild(
-            palavra
-        );
-
-
-        resumo.appendChild(
-            document.createElement("br")
-        );
-
-
-        resumo.appendChild(
-            document.createElement("br")
-        );
-
-    }
-
-
-    if (significado) {
-
-        const texto =
-            document.createElement("span");
-
-
-        texto.textContent =
-            significado;
-
-
-        resumo.appendChild(
-            texto
-        );
-
-    }
-
-
-    if (
-        !palavras &&
-        !significado
-    ) {
-
-        resumo.textContent =
-            "✎ Clique aqui para escrever seu estudo...";
-
-    }
-
-}
-
-
-
-/* =========================================
-   CARREGAR DADOS DA CARTA
-========================================= */
-
-async function carregarCarta(
-    id,
-    card
-) {
-
-    const resultado =
-        await supabaseClient
-            .from("cartas")
-            .select("*")
-            .eq("id", id)
-            .maybeSingle();
-
-
-    if (resultado.error) {
-
+    if (!idElement) {
         console.error(
-            "Erro ao carregar carta:",
-            resultado.error
+            "Não encontrei #editor-id"
         );
-
         return;
     }
 
-
-    if (!resultado.data) {
-
-        return;
-    }
-
-
-    atualizarCarta(
-
-        id,
-
-        resultado.data.palavras || "",
-
-        resultado.data.significado || ""
-
-    );
-
-}
-
-
-
-/* =========================================
-   CRIAR CARTAS
-========================================= */
-
-function criarCartas(naipe) {
-
-    const container =
-        document.getElementById(
-            "cards-" + naipe
-        );
-
-
-    if (!container) {
-
+    if (!palavrasElement) {
         console.error(
-            "Container não encontrado:",
-            naipe
+            "Não encontrei #editor-palavras"
         );
+        return;
+    }
 
+    if (!significadoElement) {
+        console.error(
+            "Não encontrei #editor-significado"
+        );
         return;
     }
 
 
-    cartas.forEach(
-        (numero, index) => {
+    const carta = {
 
-            const id =
-                gerarId(
-                    naipe,
-                    index
-                );
+        id: Number(idElement.value),
 
+        palavras: palavrasElement.value,
 
-            const carta =
-                document.createElement(
-                    "article"
-                );
+        significado: significadoElement.value
+    };
 
 
-            carta.className =
-                "card";
-
-
-            carta.dataset.cardId =
-                id;
-
-
-            carta.innerHTML = `
-
-                <div class="card-number">
-                    ${index + 1}/14
-                </div>
-
-                <div class="card-symbol">
-                    ${naipes[naipe].simbolo}
-                </div>
-
-                <h3>
-                    ${numero} de ${naipes[naipe].nome}
-                </h3>
-
-                <div
-                    class="card-resumo"
-                    role="button"
-                    tabindex="0"
-                    title="Clique para editar"
-                >
-                    ✎ Clique aqui para escrever seu estudo...
-                </div>
-
-            `;
-
-
-            const resumo =
-                carta.querySelector(
-                    ".card-resumo"
-                );
-
-
-            /* Clique no texto */
-
-            resumo.addEventListener(
-                "click",
-                () => {
-
-                    abrirEditor(
-                        id,
-                        naipe,
-                        numero
-                    );
-
-                }
-            );
-
-
-            /* Teclado */
-
-            resumo.addEventListener(
-                "keydown",
-                (evento) => {
-
-                    if (
-                        evento.key === "Enter" ||
-                        evento.key === " "
-                    ) {
-
-                        evento.preventDefault();
-
-
-                        abrirEditor(
-                            id,
-                            naipe,
-                            numero
-                        );
-
-                    }
-
-                }
-            );
-
-
-            container.appendChild(
-                carta
-            );
-
-
-            carregarCarta(
-                id,
-                carta
-            );
-
-        }
+    console.log(
+        "Tentando salvar:",
+        carta
     );
 
+
+    const sucesso =
+        await salvarCarta(carta);
+
+
+    if (sucesso) {
+
+        alert("💾 Salvo com sucesso!");
+
+    }
 }
 
 
+// ======================================================
+// INICIALIZAÇÃO
+// ======================================================
 
-/* =========================================
-   BOTÕES DO EDITOR
-========================================= */
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-document
-    .getElementById("fechar-editor")
-    .addEventListener(
-        "click",
-        fecharEditor
-    );
+        console.log(
+            "Sistema de Tarot iniciado."
+        );
 
+        const cartas =
+            await carregarCartas();
 
-document
-    .getElementById("salvar-editor")
-    .addEventListener(
-        "click",
-        salvarEditor
-    );
+        console.log(
+            "Total de cartas:",
+            cartas.length
+        );
 
-
-
-/* =========================================
-   FECHAR CLICANDO FORA
-========================================= */
-
-document
-    .getElementById("editor")
-    .addEventListener(
-        "click",
-        (evento) => {
-
-            if (
-                evento.target.id === "editor"
-            ) {
-
-                fecharEditor();
-
-            }
-
-        }
-    );
-
-
-
-/* =========================================
-   CRIAR OS 56 ARC. MENORES
-========================================= */
-
-criarCartas("paus");
-
-criarCartas("copas");
-
-criarCartas("espadas");
-
-criarCartas("ouros");
+    }
+);
