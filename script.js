@@ -1,236 +1,658 @@
+/* =========================================
+   CONFIGURAÇÃO DO SUPABASE
+========================================= */
+
 const SUPABASE_URL = "https://zkvqnvhagkwgheeprrvg.supabase.co/rest/v1/";
+
 const SUPABASE_KEY = "sb_publishable_aqZ68nmgiQ1ncyljak-fGg_YgTfHfqj";
+
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
 
+
+
+/* =========================================
+   CARTAS
+========================================= */
+
 const cartas = [
-    "Ás", "2", "3", "4", "5", "6", "7",
-    "8", "9", "10", "Valete", "Cavaleiro",
-    "Rainha", "Rei"
+    "Ás",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "Valete",
+    "Cavaleiro",
+    "Rainha",
+    "Rei"
 ];
 
+
 const naipes = {
-    paus: { nome: "Paus", simbolo: "♣" },
-    copas: { nome: "Copas", simbolo: "♥" },
-    espadas: { nome: "Espadas", simbolo: "♠" },
-    ouros: { nome: "Ouros", simbolo: "♦" }
+
+    paus: {
+        nome: "Paus",
+        simbolo: "♣"
+    },
+
+    copas: {
+        nome: "Copas",
+        simbolo: "♥"
+    },
+
+    espadas: {
+        nome: "Espadas",
+        simbolo: "♠"
+    },
+
+    ouros: {
+        nome: "Ouros",
+        simbolo: "♦"
+    }
+
 };
 
-function limparNome(nome) {
-    return nome
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9]/g, "");
+
+
+/* =========================================
+   GERAR ID NUMÉRICO
+========================================= */
+
+function gerarId(naipe, index) {
+
+    const ordem = {
+
+        paus: 1,
+
+        copas: 2,
+
+        espadas: 3,
+
+        ouros: 4
+
+    };
+
+    return (
+        (ordem[naipe] - 1) * 14
+        + index
+        + 1
+    );
+
 }
 
 
-/* ==============================
+
+/* =========================================
    ABRIR EDITOR
-============================== */
+========================================= */
 
-async function abrirEditor(id, naipe, numero) {
+async function abrirEditor(
+    id,
+    naipe,
+    numero
+) {
 
-    document.getElementById("editor").classList.add("aberto");
-
-    document.getElementById("editor-titulo").textContent =
-        `${numero} de ${naipes[naipe].nome}`;
-
-    document.getElementById("editor-id").value = id;
-    document.getElementById("editor-naipe").value = naipe;
-    document.getElementById("editor-numero").value = numero;
-
-    document.getElementById("editor-palavras").value = "";
-    document.getElementById("editor-significado").value = "";
-
-    const { data, error } = await supabaseClient
-        .from("cartas")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
-
-    if (error) {
-        console.error(error);
-        return;
-    }
-
-    if (data) {
-        document.getElementById("editor-palavras").value =
-            data.palavras || "";
-
-        document.getElementById("editor-significado").value =
-            data.significado || "";
-    }
-}
+    const editor =
+        document.getElementById("editor");
 
 
-/* ==============================
-   FECHAR EDITOR
-============================== */
+    const titulo =
+        document.getElementById("editor-titulo");
 
-function fecharEditor() {
-    document.getElementById("editor").classList.remove("aberto");
-}
-
-
-/* ==============================
-   SALVAR
-============================== */
-
-async function salvarEditor() {
-
-    const id =
-        document.getElementById("editor-id").value;
-
-    const naipe =
-        document.getElementById("editor-naipe").value;
-
-    const numero =
-        document.getElementById("editor-numero").value;
 
     const palavras =
-        document.getElementById("editor-palavras").value;
+        document.getElementById("editor-palavras");
+
 
     const significado =
-        document.getElementById("editor-significado").value;
+        document.getElementById("editor-significado");
+
+
+    const idInput =
+        document.getElementById("editor-id");
+
+
+    const naipeInput =
+        document.getElementById("editor-naipe");
+
+
+    const numeroInput =
+        document.getElementById("editor-numero");
+
 
     const status =
         document.getElementById("editor-status");
 
-    status.textContent = "salvando...";
 
-    const { error } = await supabaseClient
-        .from("cartas")
-        .upsert({
-            id: id,
-            naipe: naipe,
-            numero: numero,
-            palavras: palavras,
-            significado: significado
-        });
+    editor.classList.add("aberto");
 
-    if (error) {
 
-        console.error(error);
+    titulo.textContent =
+        `${numero} de ${naipes[naipe].nome}`;
 
-        status.textContent = "❌ erro ao salvar";
+
+    idInput.value = id;
+
+    naipeInput.value = naipe;
+
+    numeroInput.value = numero;
+
+
+    palavras.value = "";
+
+    significado.value = "";
+
+    status.textContent = "carregando...";
+
+
+    const resultado =
+        await supabaseClient
+            .from("cartas")
+            .select("*")
+            .eq("id", id)
+            .maybeSingle();
+
+
+    if (resultado.error) {
+
+        console.error(
+            "Erro ao carregar:",
+            resultado.error
+        );
+
+        status.textContent =
+            "erro ao carregar";
 
         return;
     }
 
-    status.textContent = "♡ salvo!";
 
-    setTimeout(() => {
-        fecharEditor();
-        atualizarCarta(id, palavras, significado);
-    }, 700);
-}
+    if (resultado.data) {
+
+        palavras.value =
+            resultado.data.palavras || "";
 
 
-/* ==============================
-   ATUALIZAR CARTA NA TELA
-============================== */
-
-function atualizarCarta(id, palavras, significado) {
-
-    const card =
-        document.querySelector(`[data-card-id="${id}"]`);
-
-    if (!card) return;
-
-    const resumo =
-        card.querySelector(".card-resumo");
-
-    if (significado || palavras) {
-
-        resumo.innerHTML = `
-            ${palavras
-                ? `<strong>✧ ${palavras}</strong><br><br>`
-                : ""}
-            ${significado
-                ? significado.replace(/\n/g, "<br>")
-                : ""}
-        `;
-
-    } else {
-
-        resumo.innerHTML =
-            "✎ Clique em EDITAR para adicionar seu estudo.";
+        significado.value =
+            resultado.data.significado || "";
 
     }
+
+
+    status.textContent = "";
+
+
+
+    /* Foca no campo automaticamente */
+
+    setTimeout(() => {
+
+        palavras.focus();
+
+    }, 150);
+
 }
 
 
-/* ==============================
+
+/* =========================================
+   FECHAR EDITOR
+========================================= */
+
+function fecharEditor() {
+
+    document
+        .getElementById("editor")
+        .classList
+        .remove("aberto");
+
+}
+
+
+
+/* =========================================
+   SALVAR CARTA
+========================================= */
+
+async function salvarEditor() {
+
+    const id =
+        Number(
+            document.getElementById(
+                "editor-id"
+            ).value
+        );
+
+
+    const naipe =
+        document.getElementById(
+            "editor-naipe"
+        ).value;
+
+
+    const numero =
+        document.getElementById(
+            "editor-numero"
+        ).value;
+
+
+    const palavras =
+        document.getElementById(
+            "editor-palavras"
+        ).value;
+
+
+    const significado =
+        document.getElementById(
+            "editor-significado"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "editor-status"
+        );
+
+
+    status.textContent =
+        "salvando...";
+
+
+    const resultado =
+        await supabaseClient
+            .from("cartas")
+            .upsert({
+
+                id: id,
+
+                naipe: naipe,
+
+                numero: numero,
+
+                palavras: palavras,
+
+                significado: significado
+
+            });
+
+
+    if (resultado.error) {
+
+        console.error(
+            "ERRO DO SUPABASE:",
+            resultado.error
+        );
+
+
+        status.textContent =
+            "❌ erro ao salvar";
+
+
+        alert(
+            "Não consegui salvar.\n\n" +
+            resultado.error.message
+        );
+
+
+        return;
+    }
+
+
+    status.textContent =
+        "♡ salvo online!";
+
+
+    atualizarCarta(
+        id,
+        palavras,
+        significado
+    );
+
+
+    setTimeout(() => {
+
+        fecharEditor();
+
+    }, 700);
+
+}
+
+
+
+/* =========================================
+   ATUALIZAR CARTA NA TELA
+========================================= */
+
+function atualizarCarta(
+    id,
+    palavras,
+    significado
+) {
+
+    const card =
+        document.querySelector(
+            `[data-card-id="${id}"]`
+        );
+
+
+    if (!card) {
+        return;
+    }
+
+
+    const resumo =
+        card.querySelector(
+            ".card-resumo"
+        );
+
+
+    resumo.textContent = "";
+
+
+    if (palavras) {
+
+        const palavra =
+            document.createElement("strong");
+
+
+        palavra.textContent =
+            "✧ " + palavras;
+
+
+        resumo.appendChild(
+            palavra
+        );
+
+
+        resumo.appendChild(
+            document.createElement("br")
+        );
+
+
+        resumo.appendChild(
+            document.createElement("br")
+        );
+
+    }
+
+
+    if (significado) {
+
+        const texto =
+            document.createElement("span");
+
+
+        texto.textContent =
+            significado;
+
+
+        resumo.appendChild(
+            texto
+        );
+
+    }
+
+
+    if (
+        !palavras &&
+        !significado
+    ) {
+
+        resumo.textContent =
+            "✎ Clique aqui para escrever seu estudo...";
+
+    }
+
+}
+
+
+
+/* =========================================
+   CARREGAR DADOS DA CARTA
+========================================= */
+
+async function carregarCarta(
+    id,
+    card
+) {
+
+    const resultado =
+        await supabaseClient
+            .from("cartas")
+            .select("*")
+            .eq("id", id)
+            .maybeSingle();
+
+
+    if (resultado.error) {
+
+        console.error(
+            "Erro ao carregar carta:",
+            resultado.error
+        );
+
+        return;
+    }
+
+
+    if (!resultado.data) {
+
+        return;
+    }
+
+
+    atualizarCarta(
+
+        id,
+
+        resultado.data.palavras || "",
+
+        resultado.data.significado || ""
+
+    );
+
+}
+
+
+
+/* =========================================
    CRIAR CARTAS
-============================== */
+========================================= */
 
 function criarCartas(naipe) {
 
     const container =
-        document.getElementById("cards-" + naipe);
+        document.getElementById(
+            "cards-" + naipe
+        );
 
-    cartas.forEach((numero, index) => {
 
-        const id =
-            naipe + "_" + limparNome(numero);
+    if (!container) {
 
-        const carta =
-            document.createElement("article");
+        console.error(
+            "Container não encontrado:",
+            naipe
+        );
 
-        carta.className = "card";
+        return;
+    }
 
-        carta.dataset.cardId = id;
 
-        carta.innerHTML = `
+    cartas.forEach(
+        (numero, index) => {
+
+            const id =
+                gerarId(
+                    naipe,
+                    index
+                );
+
+
+            const carta =
+                document.createElement(
+                    "article"
+                );
+
+
+            carta.className =
+                "card";
+
+
+            carta.dataset.cardId =
+                id;
+
 
             carta.innerHTML = `
 
-    <div class="card-number">
-        ${index + 1}/14
-    </div>
+                <div class="card-number">
+                    ${index + 1}/14
+                </div>
 
-    <div class="card-symbol">
-        ${naipes[naipe].simbolo}
-    </div>
+                <div class="card-symbol">
+                    ${naipes[naipe].simbolo}
+                </div>
 
-    <h3>
-        ${numero} de ${naipes[naipe].nome}
-    </h3>
+                <h3>
+                    ${numero} de ${naipes[naipe].nome}
+                </h3>
 
-    <div
-        class="card-resumo"
-        onclick="abrirEditor(
-            '${id}',
-            '${naipe}',
-            '${numero}'
-        )"
-    >
-        ✎ Clique aqui para escrever seu estudo...
-    </div>
+                <div
+                    class="card-resumo"
+                    role="button"
+                    tabindex="0"
+                    title="Clique para editar"
+                >
+                    ✎ Clique aqui para escrever seu estudo...
+                </div>
 
-`;
-.card-resumo {
-    min-height: 80px;
+            `;
 
-    padding: 12px;
 
-    margin-top: 10px;
+            const resumo =
+                carta.querySelector(
+                    ".card-resumo"
+                );
 
-    border: 1px dashed #68314f;
 
-    background: #0d070f;
+            /* Clique no texto */
 
-    color: #ead7e3;
+            resumo.addEventListener(
+                "click",
+                () => {
 
-    cursor: text;
+                    abrirEditor(
+                        id,
+                        naipe,
+                        numero
+                    );
 
-    white-space: normal;
+                }
+            );
+
+
+            /* Teclado */
+
+            resumo.addEventListener(
+                "keydown",
+                (evento) => {
+
+                    if (
+                        evento.key === "Enter" ||
+                        evento.key === " "
+                    ) {
+
+                        evento.preventDefault();
+
+
+                        abrirEditor(
+                            id,
+                            naipe,
+                            numero
+                        );
+
+                    }
+
+                }
+            );
+
+
+            container.appendChild(
+                carta
+            );
+
+
+            carregarCarta(
+                id,
+                carta
+            );
+
+        }
+    );
+
 }
 
-.card-resumo:hover {
-    border-color: #d85a91;
-}
+
+
+/* =========================================
+   BOTÕES DO EDITOR
+========================================= */
+
+document
+    .getElementById("fechar-editor")
+    .addEventListener(
+        "click",
+        fecharEditor
+    );
+
+
+document
+    .getElementById("salvar-editor")
+    .addEventListener(
+        "click",
+        salvarEditor
+    );
+
+
+
+/* =========================================
+   FECHAR CLICANDO FORA
+========================================= */
+
+document
+    .getElementById("editor")
+    .addEventListener(
+        "click",
+        (evento) => {
+
+            if (
+                evento.target.id === "editor"
+            ) {
+
+                fecharEditor();
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================
+   CRIAR OS 56 ARC. MENORES
+========================================= */
+
+criarCartas("paus");
+
+criarCartas("copas");
+
+criarCartas("espadas");
+
+criarCartas("ouros");

@@ -1,13 +1,3 @@
-/* =========================================================
-   TAROT KITTY
-   estilo: dark y2k / fan-site pessoal / mobile first
-========================================================= */
-
-
-/* =========================
-   RESET
-========================= */
-
 * {
     box-sizing: border-box;
 }
@@ -18,7 +8,11 @@ html {
 
 body {
     margin: 0;
-    padding: 0;
+
+    background:
+        radial-gradient(#241323 1px, transparent 1px);
+
+    background-size: 12px 12px;
 
     background-color: #09060b;
 
@@ -26,52 +20,16 @@ body {
 
     font-family: "Patrick Hand", cursive;
 
-    background-image:
-        radial-gradient(#35152f 1px, transparent 1px);
-
-    background-size: 18px 18px;
+    font-size: 18px;
 }
 
-
-/* =========================
-   SCROLLBAR
-========================= */
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: #100b12;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #d93b88;
-}
-
-
-/* =========================
-   LINKS
-========================= */
-
-a {
-    color: #f178b4;
-}
-
-a:hover {
-    color: #ffb1d5;
-}
-
-
-/* =========================
-   SITE
-========================= */
 
 .site {
     width: 92%;
-    max-width: 900px;
 
-    margin: 12px auto;
+    max-width: 1000px;
+
+    margin: auto;
 }
 
 
@@ -80,16 +38,15 @@ a:hover {
 ========================= */
 
 header {
+    margin-top: 15px;
+
     background: #120b14;
 
-    border: 2px solid #d83b88;
+    border: 2px solid #713653;
 
-    padding: 14px;
+    box-shadow: 5px 5px 0 #000;
 
-    text-align: center;
-
-    box-shadow:
-        4px 4px 0 #43172e;
+    padding: 15px;
 }
 
 
@@ -98,56 +55,48 @@ header {
 
     align-items: center;
 
-    justify-content: center;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
+    gap: 15px;
 }
 
 
 .kitty-gif {
-    width: 90px;
-    height: 90px;
+    width: 85px;
 
-    object-fit: contain;
+    height: 85px;
+
+    object-fit: cover;
 }
 
 
 .logo-area h1 {
     margin: 0;
 
-    color: #ff71b5;
+    color: #f080b4;
 
-    font-family: "Press Start 2P", monospace;
+    font-family: "Press Start 2P", cursive;
 
-    font-size: 19px;
+    font-size: 20px;
 
-    line-height: 1.5;
-
-    text-shadow:
-        2px 2px 0 #51142f;
+    line-height: 1.6;
 }
 
 
 .logo-area p {
-    margin: 7px 0;
+    margin: 8px 0;
 
-    color: #d9b7cb;
-
-    font-size: 17px;
+    color: #dca9c5;
 }
 
 
 .blink {
-    color: #f178b4;
+    color: #f080b4;
 
     font-size: 15px;
 }
 
 
 /* =========================
-   MENU
+   NAV
 ========================= */
 
 nav {
@@ -155,70 +104,49 @@ nav {
 
     flex-wrap: wrap;
 
-    justify-content: center;
-
-    gap: 5px;
+    gap: 7px;
 
     margin-top: 15px;
-
-    padding-top: 10px;
-
-    border-top: 1px dashed #713653;
 }
 
 
 nav a {
-    display: block;
-
-    padding: 5px 7px;
-
-    background: #1b0d1a;
-
-    border: 1px solid #713653;
-
-    color: #e88bb7;
+    color: #f08abc;
 
     text-decoration: none;
 
-    font-size: 15px;
+    border: 1px solid #713653;
+
+    padding: 6px 9px;
+
+    background: #1b0d18;
 }
 
 
 nav a:hover {
-    background: #351329;
+    background: #35162b;
 }
 
 
 /* =========================
-   INTRO
+   WELCOME
 ========================= */
 
 .welcome {
-    margin-top: 14px;
+    margin-top: 20px;
 
-    padding: 15px;
+    padding: 20px;
+
+    text-align: center;
 
     background: #100a12;
 
-    border: 1px dashed #9b3b6b;
-
-    text-align: center;
+    border: 2px dashed #713653;
 }
 
 
 .welcome h2 {
-    margin-top: 0;
-
-    color: #f278b7;
-
-    font-size: 22px;
-}
-
-
-.welcome p {
-    margin: 7px 0;
-
-    font-size: 17px;
+    color: #f080b4;
 }
 
 
@@ -227,141 +155,106 @@ nav a:hover {
 ========================= */
 
 .layout {
-    display: block;
-
-    margin-top: 14px;
+    margin-top: 20px;
 }
 
-
-/* =========================
-   SIDEBAR
-========================= */
 
 aside {
     background: #100a12;
 
-    border: 2px solid #6f3153;
+    border: 2px solid #713653;
 
-    padding: 10px;
+    padding: 20px;
 
-    margin-bottom: 14px;
+    text-align: center;
 }
 
 
 aside h3 {
-    margin: 0 0 9px;
+    color: #f080b4;
+}
 
-    color: #f278b7;
 
-    text-align: center;
+aside img {
+    width: 110px;
 
-    font-size: 19px;
+    display: block;
+
+    margin: 15px auto 0;
 }
 
 
 .side-button {
     display: inline-block;
 
-    padding: 4px 8px;
+    margin: 5px;
 
-    margin: 2px;
+    padding: 8px 12px;
 
-    background: #1c0e1b;
+    border: 1px solid #713653;
 
-    border: 1px solid #67314e;
-
-    color: #e78ab7;
+    color: #f08abc;
 
     text-decoration: none;
 
-    font-size: 16px;
+    background: #180c16;
 }
 
 
 .side-button:hover {
-    background: #32132a;
+    background: #3a172d;
 }
 
 
 aside hr {
-    border: 0;
+    border: none;
 
-    border-top: 1px dashed #5c2945;
+    border-top: 1px dashed #713653;
 
-    margin: 10px 0;
-}
-
-
-aside img {
-    display: block;
-
-    width: 80px;
-
-    height: 80px;
-
-    object-fit: contain;
-
-    margin: 8px auto 0;
-}
-
-
-.decoration {
-    text-align: center;
-
-    margin-top: 5px;
+    margin: 15px 0;
 }
 
 
 .stars {
-    color: #e9529b;
+    color: #f080b4;
 
-    letter-spacing: 4px;
+    font-size: 24px;
 }
 
 
 /* =========================
-   SEÇÕES
+   SECTIONS
 ========================= */
 
 .section {
+    margin-top: 20px;
+
+    padding: 20px;
+
     background: #100a12;
 
-    border: 2px solid #79365a;
+    border: 2px solid #713653;
 
-    padding: 14px;
-
-    margin-bottom: 14px;
-
-    box-shadow:
-        3px 3px 0 #321322;
+    box-shadow: 5px 5px 0 #000;
 }
 
 
 .section-title {
-    margin: 0 0 13px;
-
-    padding: 9px;
-
-    background: #281021;
-
-    border-left: 4px solid #e04b91;
-
-    color: #f27bb8;
-
-    font-family: "Press Start 2P", monospace;
-
-    font-size: 12px;
-
-    line-height: 1.6;
-}
-
-
-.section > p {
     margin-top: 0;
 
-    color: #cbaabd;
+    padding: 10px;
 
-    font-size: 17px;
+    background: #281121;
+
+    border-left: 7px solid #e34b94;
+
+    color: #f080b4;
+
+    font-family: "Press Start 2P", cursive;
+
+    font-size: 15px;
+
+    line-height: 1.7;
 }
 
 
@@ -374,47 +267,32 @@ aside img {
 
     grid-template-columns: repeat(2, 1fr);
 
-    gap: 8px;
+    gap: 12px;
 }
 
 
 .suit-box {
-    padding: 12px;
-
-    background: #160b16;
-
-    border: 1px solid #6e3151;
+    padding: 20px;
 
     text-align: center;
+
+    border: 1px solid #713653;
+
+    background: #160b14;
 }
 
 
 .suit-symbol {
     display: block;
 
-    color: #ee6aad;
+    font-size: 55px;
 
-    font-size: 34px;
-
-    line-height: 1;
+    color: #ed68a8;
 }
 
 
 .suit-box h3 {
-    margin: 7px 0 2px;
-
-    color: #ed78b3;
-
-    font-size: 19px;
-}
-
-
-.suit-box p {
-    margin: 3px 0;
-
-    color: #bfa0b3;
-
-    font-size: 15px;
+    color: #f080b4;
 }
 
 
@@ -425,71 +303,90 @@ aside img {
 .cards-grid {
     display: grid;
 
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
 
-    gap: 9px;
+    gap: 12px;
+
+    margin-top: 15px;
 }
 
 
 .card {
-    min-height: 0;
+    background: #160b14;
 
-    padding: 11px;
+    border: 1px solid #713653;
 
-    background: #160b17;
+    padding: 15px;
 
-    border: 1px solid #743653;
+    min-height: 220px;
 
-    position: relative;
+    text-align: center;
+
+    transition: 0.15s;
 }
 
 
 .card:hover {
-    border-color: #d84b8e;
+    border-color: #e34b94;
+
+    transform: translateY(-2px);
 }
 
 
 .card-number {
-    color: #9e6482;
+    text-align: right;
 
-    font-family: monospace;
+    color: #9e6683;
 
-    font-size: 11px;
+    font-size: 14px;
 }
 
 
 .card-symbol {
-    margin: 5px 0;
+    color: #ed68a8;
 
-    color: #ec67aa;
+    font-size: 45px;
 
-    text-align: center;
-
-    font-size: 27px;
+    margin: 5px;
 }
 
 
 .card h3 {
-    margin: 5px 0 8px;
+    color: #f080b4;
 
-    color: #ed8abc;
-
-    text-align: center;
-
-    font-size: 20px;
+    margin: 8px 0 12px;
 }
 
 
-.placeholder {
-    padding: 8px;
+/* ÁREA CLICÁVEL */
 
-    background: #100811;
+.card-resumo {
+    min-height: 90px;
 
-    border: 1px dashed #613049;
+    padding: 12px;
 
-    color: #aa899d;
+    margin-top: 10px;
 
-    font-size: 15px;
+    border: 1px dashed #713653;
+
+    background: #0d070f;
+
+    color: #cdaabd;
+
+    text-align: left;
+
+    cursor: text;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+}
+
+
+.card-resumo:hover {
+    border-color: #e34b94;
+
+    color: #ead7e3;
 }
 
 
@@ -498,239 +395,25 @@ aside img {
 ========================= */
 
 .study-box {
-    padding: 12px;
+    padding: 15px;
 
-    margin-top: 9px;
+    margin-top: 12px;
 
-    background: #160b17;
+    border: 1px dashed #713653;
 
-    border: 1px dashed #713553;
+    background: #160b14;
 }
 
 
 .study-box h3 {
-    margin: 0 0 5px;
-
-    color: #e979b3;
-
-    font-size: 19px;
-}
-
-
-.study-box p {
-    margin: 0;
-
-    color: #bda2b2;
-
-    font-size: 16px;
+    color: #f080b4;
 }
 
 
 /* =========================
-   FOOTER
+   EDITOR
 ========================= */
 
-footer {
-    margin-top: 18px;
-
-    padding: 15px;
-
-    background: #130914;
-
-    border: 2px solid #713653;
-
-    color: #c99db6;
-
-    text-align: center;
-
-    font-size: 15px;
-}
-
-
-footer p {
-    margin: 5px;
-}
-
-
-.counter {
-    display: inline-block;
-
-    margin-top: 6px;
-
-    padding: 3px 7px;
-
-    background: #050505;
-
-    border: 1px solid #63304c;
-
-    color: #e94d9a;
-
-    font-family: monospace;
-
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   CELULAR
-========================================================= */
-
-@media (max-width: 600px) {
-
-    .site {
-        width: 95%;
-
-        margin: 7px auto;
-    }
-
-
-    header {
-        padding: 10px;
-    }
-
-
-    .header-content {
-        gap: 5px;
-    }
-
-
-    .kitty-gif {
-        width: 70px;
-        height: 70px;
-    }
-
-
-    .logo-area h1 {
-        font-size: 14px;
-    }
-
-
-    .logo-area p {
-        font-size: 15px;
-    }
-
-
-    .blink {
-        font-size: 12px;
-    }
-
-
-    nav {
-        gap: 3px;
-    }
-
-
-    nav a {
-        padding: 4px 5px;
-
-        font-size: 11px;
-    }
-
-
-    .welcome {
-        padding: 12px;
-    }
-
-
-    .welcome h2 {
-        font-size: 20px;
-    }
-
-
-    .layout {
-        margin-top: 10px;
-    }
-
-
-    aside {
-        padding: 8px;
-
-        text-align: center;
-    }
-
-
-    .side-button {
-        font-size: 15px;
-    }
-
-
-    .section {
-        padding: 10px;
-    }
-
-
-    .section-title {
-        font-size: 10px;
-
-        padding: 8px;
-    }
-
-
-    .suits {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-
-    .suit-box {
-        padding: 9px;
-    }
-
-
-    .cards-grid {
-        gap: 7px;
-    }
-
-
-    .card {
-        padding: 10px;
-    }
-
-
-    .card h3 {
-        font-size: 19px;
-    }
-
-}
-
-
-/* =========================================================
-   TELAS MUITO PEQUENAS
-========================================================= */
-
-@media (max-width: 350px) {
-
-    .site {
-        width: 97%;
-    }
-
-
-    .suits {
-        grid-template-columns: 1fr;
-    }
-
-
-    .logo-area h1 {
-        font-size: 12px;
-    }
-
-
-    nav a {
-        font-size: 10px;
-    }
-
-}
-/* ==============================
-   EDITOR
-============================== */
-.card-resumo {
-    min-height: 80px;
-    padding: 12px;
-    margin-top: 10px;
-    border: 1px dashed #68314f;
-    background: #0d070f;
-    color: #ead7e3;
-    cursor: text;
-}
 .editor {
     display: none;
 
@@ -738,9 +421,9 @@ footer p {
 
     inset: 0;
 
-    background: rgba(0, 0, 0, 0.75);
-
     z-index: 9999;
+
+    background: rgba(0, 0, 0, 0.78);
 
     padding: 20px;
 
@@ -749,9 +432,11 @@ footer p {
     justify-content: center;
 }
 
+
 .editor.aberto {
     display: flex;
 }
+
 
 .editor-caixa {
     position: relative;
@@ -764,26 +449,30 @@ footer p {
 
     overflow-y: auto;
 
+    padding: 22px;
+
     background: #120b14;
 
     border: 2px solid #d85a91;
 
-    padding: 20px;
-
-    box-shadow: 5px 5px 0 #000;
+    box-shadow: 6px 6px 0 #000;
 }
 
-.editor-caixa h2 {
-    color: #ef82b4;
 
+.editor-caixa h2 {
     margin-top: 0;
+
+    padding-right: 30px;
+
+    color: #f080b4;
 
     font-family: "Press Start 2P", cursive;
 
     font-size: 15px;
 
-    line-height: 1.7;
+    line-height: 1.8;
 }
+
 
 .editor-caixa label {
     display: block;
@@ -792,80 +481,87 @@ footer p {
 
     margin-bottom: 5px;
 
-    color: #df75ac;
+    color: #e77bad;
 }
+
 
 .editor-caixa input,
 .editor-caixa textarea {
     width: 100%;
 
-    box-sizing: border-box;
+    border: 1px solid #713653;
 
     background: #09060b;
 
     color: #ead7e3;
 
-    border: 1px solid #68314f;
-
     padding: 10px;
 
     font-family: "Patrick Hand", cursive;
 
-    font-size: 17px;
+    font-size: 18px;
 
     outline: none;
 }
 
-.editor-caixa textarea {
-    min-height: 180px;
-
-    resize: vertical;
-}
 
 .editor-caixa input:focus,
 .editor-caixa textarea:focus {
     border-color: #e34b94;
+
+    box-shadow: 0 0 5px rgba(227, 75, 148, 0.35);
 }
+
+
+.editor-caixa textarea {
+    min-height: 190px;
+
+    resize: vertical;
+}
+
 
 .fechar-editor {
     position: absolute;
 
     right: 10px;
 
-    top: 10px;
-
-    background: none;
+    top: 5px;
 
     border: none;
 
-    color: #ef82b4;
+    background: transparent;
 
-    font-size: 28px;
+    color: #f080b4;
+
+    font-size: 32px;
 
     cursor: pointer;
 }
 
+
 .salvar-editor {
     margin-top: 15px;
 
-    padding: 10px 15px;
+    padding: 10px 16px;
+
+    border: 1px solid #8b3b64;
 
     background: #281021;
 
     color: #f08abc;
 
-    border: 1px solid #8b3b64;
-
     font-family: "Patrick Hand", cursive;
 
-    font-size: 18px;
+    font-size: 19px;
 
     cursor: pointer;
 }
 
+
 .salvar-editor:hover {
     background: #461633;
 }
+
 
 #editor-status {
     margin-left: 10px;
@@ -874,26 +570,116 @@ footer p {
 }
 
 
-/* BOTÃO DAS CARTAS */
+/* =========================
+   FOOTER
+========================= */
 
-.editar-btn {
-    margin-top: 12px;
+footer {
+    margin: 20px 0;
 
-    padding: 7px 12px;
+    padding: 20px;
 
-    background: #281021;
+    text-align: center;
 
-    color: #f08abc;
+    background: #100a12;
 
-    border: 1px solid #8b3b64;
+    border: 2px solid #713653;
 
-    font-family: "Patrick Hand", cursive;
-
-    font-size: 16px;
-
-    cursor: pointer;
+    color: #b889a2;
 }
 
-.editar-btn:hover {
-    background: #461633;
+
+.counter {
+    display: inline-block;
+
+    padding: 5px;
+
+    border: 1px solid #713653;
+
+    color: #f080b4;
+
+    font-family: monospace;
+}
+
+
+/* =========================
+   CELULAR
+========================= */
+
+@media (max-width: 600px) {
+
+    .site {
+        width: 94%;
+    }
+
+
+    .header-content {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+
+    .kitty-gif {
+        width: 70px;
+
+        height: 70px;
+    }
+
+
+    .logo-area h1 {
+        font-size: 15px;
+    }
+
+
+    nav {
+        justify-content: center;
+    }
+
+
+    nav a {
+        font-size: 15px;
+    }
+
+
+    .section {
+        padding: 12px;
+    }
+
+
+    .section-title {
+        font-size: 11px;
+    }
+
+
+    .suits {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .editor {
+        padding: 10px;
+    }
+
+
+    .editor-caixa {
+        padding: 18px;
+
+        max-height: 94vh;
+    }
+
+}
+
+
+@media (max-width: 350px) {
+
+    .suits {
+        grid-template-columns: 1fr;
+    }
+
 }
