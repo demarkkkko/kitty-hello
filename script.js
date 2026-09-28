@@ -2,7 +2,7 @@
    CONFIGURAÇÃO DO SUPABASE
 ========================================= */
 
-const SUPABASE_URL = "https://zkvqnvhagkwgheeprrvg.supabase.co/rest/v1/";
+const SUPABASE_URL = "https://zkvqnvhagkwgheeprrvg.supabase.co";
 
 const SUPABASE_KEY = "sb_publishable_aqZ68nmgiQ1ncyljak-fGg_YgTfHfqj";
 
