@@ -1,260 +1,658 @@
-// ======================================================
-// CONFIGURAÇÃO
-// ======================================================
+/* =========================================
+   CONFIGURAÇÃO DO SUPABASE
+========================================= */
 
-const SUPABASE_URL = "https://zkvqnvhagkwgheeprrvg.supabase.co";
+const SUPABASE_URL = "https://zkvqnvhagkwgheeprrvg.supabase.co/rest/v1/";
+
 const SUPABASE_KEY = "sb_publishable_aqZ68nmgiQ1ncyljak-fGg_YgTfHfqj";
 
-// Cria conexão com o Supabase
+
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
 
 
-// ======================================================
-// CONFIGURAÇÃO DO GITHUB
-// ======================================================
 
-// Seu GitHub Pages
-const GITHUB_USER = "demarkkkko";
+/* =========================================
+   CARTAS
+========================================= */
 
-// Se o site estiver no repositório demarkkkko.github.io
-const GITHUB_REPO = "demarkkkko.github.io";
-
-// Arquivo que contém os dados das cartas.
-// TROQUE caso o seu arquivo tenha outro nome.
-const GITHUB_ARQUIVO = "cartas.json";
-
-// Branch principal
-const GITHUB_BRANCH = "main";
-
-
-// ======================================================
-// LER CARTAS DO GITHUB
-// ======================================================
-
-async function carregarDoGitHub() {
-
-    const url =
-        `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_ARQUIVO}`;
-
-    try {
-
-        const resposta = await fetch(url);
-
-        if (!resposta.ok) {
-            throw new Error(
-                `GitHub respondeu com ${resposta.status}`
-            );
-        }
-
-        const dados = await resposta.json();
-
-        console.log("Cartas carregadas do GitHub:", dados);
-
-        return dados;
-
-    } catch (erro) {
-
-        console.error("Erro ao carregar cartas do GitHub:", erro);
-
-        return [];
-    }
-}
+const cartas = [
+    "Ás",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "Valete",
+    "Cavaleiro",
+    "Rainha",
+    "Rei"
+];
 
 
-// ======================================================
-// LER CARTAS DO SUPABASE
-// ======================================================
+const naipes = {
 
-async function carregarDoSupabase() {
+    paus: {
+        nome: "Paus",
+        simbolo: "♣"
+    },
 
-    try {
+    copas: {
+        nome: "Copas",
+        simbolo: "♥"
+    },
 
-        const { data, error } = await supabaseClient
-            .from("cartas")
-            .select("*")
-            .order("id", { ascending: true });
+    espadas: {
+        nome: "Espadas",
+        simbolo: "♠"
+    },
 
-        if (error) {
-            throw error;
-        }
-
-        console.log("Cartas carregadas do Supabase:", data);
-
-        return data || [];
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao carregar cartas do Supabase:",
-            erro
-        );
-
-        return [];
-    }
-}
-
-
-// ======================================================
-// CARREGAR DADOS
-// ======================================================
-
-async function carregarCartas() {
-
-    // Primeiro tenta o Supabase
-    const cartasSupabase = await carregarDoSupabase();
-
-    if (cartasSupabase.length > 0) {
-
-        console.log("Usando dados do Supabase.");
-
-        return cartasSupabase;
+    ouros: {
+        nome: "Ouros",
+        simbolo: "♦"
     }
 
+};
 
-    // Se não tiver nada no Supabase,
-    // usa o GitHub como banco inicial.
 
-    console.log(
-        "Supabase vazio. Carregando cartas do GitHub..."
+
+/* =========================================
+   GERAR ID NUMÉRICO
+========================================= */
+
+function gerarId(naipe, index) {
+
+    const ordem = {
+
+        paus: 1,
+
+        copas: 2,
+
+        espadas: 3,
+
+        ouros: 4
+
+    };
+
+    return (
+        (ordem[naipe] - 1) * 14
+        + index
+        + 1
     );
 
-    return await carregarDoGitHub();
 }
 
 
-// ======================================================
-// SALVAR UMA CARTA NO SUPABASE
-// ======================================================
 
-async function salvarCarta(carta) {
+/* =========================================
+   ABRIR EDITOR
+========================================= */
 
-    try {
+async function abrirEditor(
+    id,
+    naipe,
+    numero
+) {
 
-        const { data, error } = await supabaseClient
-            .from("cartas")
-            .upsert(
-                carta,
-                {
-                    onConflict: "id"
-                }
-            )
-            .select();
-
-        if (error) {
-            throw error;
-        }
-
-        console.log("Carta salva:", data);
-
-        return true;
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao salvar carta:",
-            erro
-        );
-
-        alert(
-            "Não consegui salvar.\n\n" +
-            erro.message
-        );
-
-        return false;
-    }
-}
+    const editor =
+        document.getElementById("editor");
 
 
-// ======================================================
-// EXEMPLO DE FUNÇÃO DO BOTÃO SALVAR
-// ======================================================
+    const titulo =
+        document.getElementById("editor-titulo");
 
-async function salvarEditor() {
 
-    // Pega o ID da carta
-    const idElement =
-        document.getElementById("editor-id");
-
-    // Pega os campos do editor
-    const palavrasElement =
+    const palavras =
         document.getElementById("editor-palavras");
 
-    const significadoElement =
+
+    const significado =
         document.getElementById("editor-significado");
 
 
-    if (!idElement) {
+    const idInput =
+        document.getElementById("editor-id");
+
+
+    const naipeInput =
+        document.getElementById("editor-naipe");
+
+
+    const numeroInput =
+        document.getElementById("editor-numero");
+
+
+    const status =
+        document.getElementById("editor-status");
+
+
+    editor.classList.add("aberto");
+
+
+    titulo.textContent =
+        `${numero} de ${naipes[naipe].nome}`;
+
+
+    idInput.value = id;
+
+    naipeInput.value = naipe;
+
+    numeroInput.value = numero;
+
+
+    palavras.value = "";
+
+    significado.value = "";
+
+    status.textContent = "carregando...";
+
+
+    const resultado =
+        await supabaseClient
+            .from("cartas")
+            .select("*")
+            .eq("id", id)
+            .maybeSingle();
+
+
+    if (resultado.error) {
+
         console.error(
-            "Não encontrei #editor-id"
+            "Erro ao carregar:",
+            resultado.error
         );
+
+        status.textContent =
+            "erro ao carregar";
+
         return;
     }
 
-    if (!palavrasElement) {
-        console.error(
-            "Não encontrei #editor-palavras"
-        );
-        return;
-    }
 
-    if (!significadoElement) {
-        console.error(
-            "Não encontrei #editor-significado"
-        );
-        return;
-    }
+    if (resultado.data) {
+
+        palavras.value =
+            resultado.data.palavras || "";
 
 
-    const carta = {
-
-        id: Number(idElement.value),
-
-        palavras: palavrasElement.value,
-
-        significado: significadoElement.value
-    };
-
-
-    console.log(
-        "Tentando salvar:",
-        carta
-    );
-
-
-    const sucesso =
-        await salvarCarta(carta);
-
-
-    if (sucesso) {
-
-        alert("💾 Salvo com sucesso!");
+        significado.value =
+            resultado.data.significado || "";
 
     }
+
+
+    status.textContent = "";
+
+
+
+    /* Foca no campo automaticamente */
+
+    setTimeout(() => {
+
+        palavras.focus();
+
+    }, 150);
+
 }
 
 
-// ======================================================
-// INICIALIZAÇÃO
-// ======================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+/* =========================================
+   FECHAR EDITOR
+========================================= */
 
-        console.log(
-            "Sistema de Tarot iniciado."
+function fecharEditor() {
+
+    document
+        .getElementById("editor")
+        .classList
+        .remove("aberto");
+
+}
+
+
+
+/* =========================================
+   SALVAR CARTA
+========================================= */
+
+async function salvarEditor() {
+
+    const id =
+        Number(
+            document.getElementById(
+                "editor-id"
+            ).value
         );
 
-        const cartas =
-            await carregarCartas();
 
-        console.log(
-            "Total de cartas:",
-            cartas.length
+    const naipe =
+        document.getElementById(
+            "editor-naipe"
+        ).value;
+
+
+    const numero =
+        document.getElementById(
+            "editor-numero"
+        ).value;
+
+
+    const palavras =
+        document.getElementById(
+            "editor-palavras"
+        ).value;
+
+
+    const significado =
+        document.getElementById(
+            "editor-significado"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "editor-status"
+        );
+
+
+    status.textContent =
+        "salvando...";
+
+
+    const resultado =
+        await supabaseClient
+            .from("cartas")
+            .upsert({
+
+                id: id,
+
+                naipe: naipe,
+
+                numero: numero,
+
+                palavras: palavras,
+
+                significado: significado
+
+            });
+
+
+    if (resultado.error) {
+
+        console.error(
+            "ERRO DO SUPABASE:",
+            resultado.error
+        );
+
+
+        status.textContent =
+            "❌ erro ao salvar";
+
+
+        alert(
+            "Não consegui salvar.\n\n" +
+            resultado.error.message
+        );
+
+
+        return;
+    }
+
+
+    status.textContent =
+        "♡ salvo online!";
+
+
+    atualizarCarta(
+        id,
+        palavras,
+        significado
+    );
+
+
+    setTimeout(() => {
+
+        fecharEditor();
+
+    }, 700);
+
+}
+
+
+
+/* =========================================
+   ATUALIZAR CARTA NA TELA
+========================================= */
+
+function atualizarCarta(
+    id,
+    palavras,
+    significado
+) {
+
+    const card =
+        document.querySelector(
+            `[data-card-id="${id}"]`
+        );
+
+
+    if (!card) {
+        return;
+    }
+
+
+    const resumo =
+        card.querySelector(
+            ".card-resumo"
+        );
+
+
+    resumo.textContent = "";
+
+
+    if (palavras) {
+
+        const palavra =
+            document.createElement("strong");
+
+
+        palavra.textContent =
+            "✧ " + palavras;
+
+
+        resumo.appendChild(
+            palavra
+        );
+
+
+        resumo.appendChild(
+            document.createElement("br")
+        );
+
+
+        resumo.appendChild(
+            document.createElement("br")
         );
 
     }
-);
+
+
+    if (significado) {
+
+        const texto =
+            document.createElement("span");
+
+
+        texto.textContent =
+            significado;
+
+
+        resumo.appendChild(
+            texto
+        );
+
+    }
+
+
+    if (
+        !palavras &&
+        !significado
+    ) {
+
+        resumo.textContent =
+            "✎ Clique aqui para escrever seu estudo...";
+
+    }
+
+}
+
+
+
+/* =========================================
+   CARREGAR DADOS DA CARTA
+========================================= */
+
+async function carregarCarta(
+    id,
+    card
+) {
+
+    const resultado =
+        await supabaseClient
+            .from("cartas")
+            .select("*")
+            .eq("id", id)
+            .maybeSingle();
+
+
+    if (resultado.error) {
+
+        console.error(
+            "Erro ao carregar carta:",
+            resultado.error
+        );
+
+        return;
+    }
+
+
+    if (!resultado.data) {
+
+        return;
+    }
+
+
+    atualizarCarta(
+
+        id,
+
+        resultado.data.palavras || "",
+
+        resultado.data.significado || ""
+
+    );
+
+}
+
+
+
+/* =========================================
+   CRIAR CARTAS
+========================================= */
+
+function criarCartas(naipe) {
+
+    const container =
+        document.getElementById(
+            "cards-" + naipe
+        );
+
+
+    if (!container) {
+
+        console.error(
+            "Container não encontrado:",
+            naipe
+        );
+
+        return;
+    }
+
+
+    cartas.forEach(
+        (numero, index) => {
+
+            const id =
+                gerarId(
+                    naipe,
+                    index
+                );
+
+
+            const carta =
+                document.createElement(
+                    "article"
+                );
+
+
+            carta.className =
+                "card";
+
+
+            carta.dataset.cardId =
+                id;
+
+
+            carta.innerHTML = `
+
+                <div class="card-number">
+                    ${index + 1}/14
+                </div>
+
+                <div class="card-symbol">
+                    ${naipes[naipe].simbolo}
+                </div>
+
+                <h3>
+                    ${numero} de ${naipes[naipe].nome}
+                </h3>
+
+                <div
+                    class="card-resumo"
+                    role="button"
+                    tabindex="0"
+                    title="Clique para editar"
+                >
+                    ✎ Clique aqui para escrever seu estudo...
+                </div>
+
+            `;
+
+
+            const resumo =
+                carta.querySelector(
+                    ".card-resumo"
+                );
+
+
+            /* Clique no texto */
+
+            resumo.addEventListener(
+                "click",
+                () => {
+
+                    abrirEditor(
+                        id,
+                        naipe,
+                        numero
+                    );
+
+                }
+            );
+
+
+            /* Teclado */
+
+            resumo.addEventListener(
+                "keydown",
+                (evento) => {
+
+                    if (
+                        evento.key === "Enter" ||
+                        evento.key === " "
+                    ) {
+
+                        evento.preventDefault();
+
+
+                        abrirEditor(
+                            id,
+                            naipe,
+                            numero
+                        );
+
+                    }
+
+                }
+            );
+
+
+            container.appendChild(
+                carta
+            );
+
+
+            carregarCarta(
+                id,
+                carta
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   BOTÕES DO EDITOR
+========================================= */
+
+document
+    .getElementById("fechar-editor")
+    .addEventListener(
+        "click",
+        fecharEditor
+    );
+
+
+document
+    .getElementById("salvar-editor")
+    .addEventListener(
+        "click",
+        salvarEditor
+    );
+
+
+
+/* =========================================
+   FECHAR CLICANDO FORA
+========================================= */
+
+document
+    .getElementById("editor")
+    .addEventListener(
+        "click",
+        (evento) => {
+
+            if (
+                evento.target.id === "editor"
+            ) {
+
+                fecharEditor();
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================
+   CRIAR OS 56 ARC. MENORES
+========================================= */
+
+criarCartas("paus");
+
+criarCartas("copas");
+
+criarCartas("espadas");
+
+criarCartas("ouros");
